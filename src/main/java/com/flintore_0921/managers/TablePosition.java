@@ -3,8 +3,9 @@ package com.flintore_0921.managers;
 import com.flintore_0921.componentes.Constants;
 import com.flintore_0921.componentes.Constants.ETablePosition;
 
+@Deprecated
 public class TablePosition {
-    private int x, y;
+    private Integer x, y;
 
     /*Initiate the value.*/
     public TablePosition() {
@@ -12,7 +13,9 @@ public class TablePosition {
         this.y = 0;
     }
 
-    /**Get the coordinate*/
+    /**
+     * Get the coordinate
+     */
     public int get(ETablePosition coordinate) {
         return switch (coordinate) {
             case X -> this.x;
@@ -20,7 +23,9 @@ public class TablePosition {
         };
     }
 
-    /**First get the value then increase the coordinate.*/
+    /**
+     * First get the value then increase the coordinate.
+     */
     public int getAndIncrease(ETablePosition coordinate) {
         try {
             return switch (coordinate) {
@@ -32,7 +37,9 @@ public class TablePosition {
         }
     }
 
-    /**First get the value then decrease the coordinate.*/
+    /**
+     * First get the value then decrease the coordinate.
+     */
     public int getAndDecrease(ETablePosition coordinate) {
         try {
             return switch (coordinate) {
@@ -44,18 +51,45 @@ public class TablePosition {
         }
     }
 
-    private void increment(ETablePosition coordinate) {
-        switch (coordinate) {
-            case X -> this.x++;
-            case Y -> this.y++;
+    private void set(ETablePosition position, int value) {
+        switch (position) {
+            case X -> this.x = value;
+            case Y -> this.y = value;
         }
     }
 
-    private void decrease(ETablePosition coordinate) {
+    private void increment(ETablePosition coordinate) {
+        int value = this.get(coordinate);
+
+//        Switch to validations
         switch (coordinate) {
-            case X -> this.x--;
-            case Y -> this.y--;
+            case X -> {
+                if (value > Constants.Table.TABLE_ROWS) {
+                    return;
+                }
+
+            }
+            case Y -> {
+                if (value > Constants.Table.TABLE_COLUMNS) {
+                    return;
+                }
+            }
         }
+        set(coordinate, ++value);
+    }
+
+    private void decrease(ETablePosition coordinate) {
+        int value = this.get(coordinate);
+        if (value == 0) {
+            return;
+        }
+
+        this.set(coordinate, --value);
+    }
+
+    public void reset() {
+        this.x = 0;
+        this.y = 0;
     }
 
 }
