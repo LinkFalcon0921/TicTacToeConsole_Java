@@ -21,23 +21,29 @@ abstract class Menu {
 
     abstract void printMenu();
 
-    protected void println(Object xyz){
+    protected void println(Object xyz) {
         this.PRINTER.println(xyz);
     }
 
-    protected void print(Object xyz){
+    protected void print(Object xyz) {
         this.PRINTER.print(xyz);
     }
 
-    protected void  printLineSeparator(String separator){
-        if(!separator.isBlank()){
+    protected void printMessageWithSeparators(String xyz) {
+        printLineSeparator();
+        println(xyz);
+        printLineSeparator();
+    }
+
+    protected void printLineSeparator(String separator) {
+        if (!separator.isBlank()) {
             separator = separator.repeat(COUNT_SEPARATOR_LENGTH);
         }
 
         this.PRINTER.println(separator);
     }
 
-    protected void  printLineSeparator(){
+    protected void printLineSeparator() {
         printLineSeparator(LINE_SEPARATOR);
     }
 
@@ -56,5 +62,13 @@ abstract class Menu {
         for (Object obj : availableIcons) {
             println(String.format("%d. %s", ++count, obj));
         }
+    }
+
+    protected boolean isExit(int option) {
+        return option == EXIT_VALUE;
+    }
+
+    protected boolean isExit(String option) {
+        return Integer.parseInt(option) == EXIT_VALUE;
     }
 }
