@@ -1,6 +1,7 @@
 package com.flintore_0921.menues;
 
 import java.io.PrintStream;
+import java.util.Collection;
 import java.util.Scanner;
 
 import static com.flintore_0921.componentes.Constants.Menu.*;
@@ -20,23 +21,40 @@ abstract class Menu {
 
     abstract void printMenu();
 
-    protected void println(Object value){
-        this.PRINTER.println(value);
+    protected void println(Object xyz){
+        this.PRINTER.println(xyz);
     }
 
-    protected void print(Object value){
-        this.PRINTER.print(value);
+    protected void print(Object xyz){
+        this.PRINTER.print(xyz);
     }
 
     protected void  printLineSeparator(String separator){
-        this.PRINTER.println(separator.repeat(COUNT_SEPARATOR_LENGTH));
+        if(!separator.isBlank()){
+            separator = separator.repeat(COUNT_SEPARATOR_LENGTH);
+        }
+
+        this.PRINTER.println(separator);
     }
 
     protected void  printLineSeparator(){
         printLineSeparator(LINE_SEPARATOR);
     }
 
+    protected void fullLineSeparatorSpace() {
+        printLineSeparator();
+        printLineSeparator("");
+    }
+
+    /*label: While the value is not the Exit value or not surpass than the maxValue*/
     protected boolean validate(int option, int maxValue) {
-        return option > EXIT_VALUE && option < maxValue;
+        return option > EXIT_VALUE && option <= maxValue;
+    }
+
+    protected <R, T extends Collection<R>> void printListCollection(T availableIcons) {
+        int count = 0;
+        for (Object obj : availableIcons) {
+            println(String.format("%d. %s", ++count, obj));
+        }
     }
 }
