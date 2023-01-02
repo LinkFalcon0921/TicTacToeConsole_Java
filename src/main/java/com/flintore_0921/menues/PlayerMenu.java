@@ -247,7 +247,7 @@ public class PlayerMenu extends Menu {
                 showDefaultMessageInvalidOption();
             }
 
-        } while (flagNewName);
+        } while (!flagNewName);
 
         if (Objects.nonNull(newName) && this.playerManager.editUser(name, newName)) {
             printMessageWithSeparators("Nombre editado exitosamente: ".concat(newName));
@@ -290,7 +290,7 @@ public class PlayerMenu extends Menu {
                 showDefaultMessageInvalidOption();
             }
 
-        } while (flagEdit);
+        } while (!flagEdit);
 
         if (Objects.nonNull(playerIcon) && this.playerManager.editUser(name, playerIcon)) {
             printMessageWithSeparators(String.format("Icono editado exitosamente: %s : %s", name, playerIcon));
@@ -366,7 +366,7 @@ public class PlayerMenu extends Menu {
             }
 
             flagName = true;
-        } while (flagName);
+        } while (!flagName);
 
         return newName;
     }
@@ -387,7 +387,7 @@ public class PlayerMenu extends Menu {
             } catch (Exception e) {
                 showDefaultMessageInvalidOption();
             }
-        } while (flagName);
+        } while (!flagName);
 
         return newName;
     }

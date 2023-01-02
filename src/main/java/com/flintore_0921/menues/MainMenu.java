@@ -7,7 +7,7 @@ import java.util.Scanner;
 
 public class MainMenu extends Menu {
 
-    public static final int PLAYERS_EXPECTED = 2;
+    private static final int PLAYERS_EXPECTED = 2;
 
     /*Key values for each menu.*/
     private interface MenuKey {
