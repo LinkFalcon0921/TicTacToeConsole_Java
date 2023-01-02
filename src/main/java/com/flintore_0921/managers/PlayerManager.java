@@ -2,7 +2,6 @@ package com.flintore_0921.managers;
 
 import com.flintore_0921.componentes.PlayerIcon;
 
-import java.lang.invoke.VarHandle;
 import java.util.*;
 
 public class PlayerManager {
@@ -21,7 +20,7 @@ public class PlayerManager {
         return this.players.put(playerName, icon) == null;
     }
 
-    public List<String> getUserNames() {
+    public List<String> getPlayerNames() {
         return new ArrayList<>(this.players.keySet());
     }
 
@@ -35,7 +34,7 @@ public class PlayerManager {
         return availableIcons;
     }
 
-    public boolean editUser(String name, String newName) {
+    public boolean editPlayer(String name, String newName) {
         if (!containsPlayer(name)) {
             return false;
         }
@@ -44,7 +43,7 @@ public class PlayerManager {
         return this.players.put(newName, playerIcon) != null;
     }
 
-    public boolean editUser(String name, PlayerIcon newIcon) {
+    public boolean editPlayer(String name, PlayerIcon newIcon) {
         if (!containsPlayer(name)) {
             return false;
         }

@@ -1,7 +1,7 @@
 package com.flintore_0921;
 
 import com.flintore_0921.componentes.PlayerIcon;
-import com.flintore_0921.menues.MainMenu;
+import com.flintore_0921.menus.MainMenu;
 
 public class Application {
 //    Main Menu class

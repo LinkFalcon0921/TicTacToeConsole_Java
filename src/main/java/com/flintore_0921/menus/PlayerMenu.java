@@ -1,4 +1,4 @@
-package com.flintore_0921.menues;
+package com.flintore_0921.menus;
 
 import com.flintore_0921.componentes.PlayerIcon;
 import com.flintore_0921.managers.PlayerManager;
@@ -7,7 +7,6 @@ import java.io.PrintStream;
 import java.util.List;
 import java.util.Objects;
 import java.util.Scanner;
-import java.util.regex.Pattern;
 
 
 public class PlayerMenu extends Menu {

@@ -2,21 +2,40 @@ package com.flintore_0921.managers;
 
 import com.flintore_0921.componentes.PlayerIcon;
 
-import java.io.PrintStream;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.Objects;
 
-import static com.flintore_0921.componentes.Constants.AppManager.ROWS_SEPARATOR;
-import static com.flintore_0921.componentes.Constants.AppManager.SEPARATOR;
 import static com.flintore_0921.componentes.Constants.Table.TABLE_COLUMNS;
 import static com.flintore_0921.componentes.Constants.Table.TABLE_ROWS;
 
 public class TicTacToeManager {
-//    Printer of the app
-    private final PrintStream PRINTER;
-    //    Table of the app.
+
+    private static TicTacToeManager manager;
+
     private final PlayerIcon[][] table;
 
-    public TicTacToeManager(PrintStream printer) {
-        this.PRINTER = printer;
+    private final PlayerManager playerManager;
+    private TurnManager turns;
+
+    public static void initiate(PlayerManager playerManager) {
+        if(Objects.nonNull(manager)){
+            return;
+        }
+
+        manager = new TicTacToeManager(playerManager);
+    }
+
+    /**
+     * label: Use initiate methods before use it.
+     */
+    public static TicTacToeManager getInstance() {
+        return manager;
+    }
+
+    private TicTacToeManager(PlayerManager playerManager) {
+        this.playerManager = playerManager;
+        this.turns = new TurnManager(playerManager.getTotalPlayers());
         this.table = new PlayerIcon[TABLE_ROWS][TABLE_COLUMNS];
     }
 
@@ -32,28 +51,37 @@ public class TicTacToeManager {
         return this.table[xPos][yPos] == null;
     }
 
-    public void printTable() {
-        for (int xPos = 0; xPos < TABLE_ROWS; xPos++) {
-            PlayerIcon[] columns = this.table[xPos];
-            printRowWithSeparator(columns);
+    public PlayerIcon[][] getTable() {
+        final int START_POS = 0;
+        PlayerIcon[][] copyTable = new PlayerIcon[TABLE_ROWS][TABLE_COLUMNS];
+
+        System.arraycopy(this.table, START_POS, copyTable, 0, this.table.length);
+
+        return copyTable;
+    }
+
+    // TODO: 1/2/2023  
+    public String hasWon(){
+
+        Iterator<PlayerIcon> playerIconIterator = this.playerManager.getAvailableIcons().iterator();
+        int cursor = 0;
+
+        while (playerIconIterator.hasNext()) {
+            PlayerIcon playerIcon = playerIconIterator.next();
+
+            if(checkWon(playerIcon)){
+                return "";
+            }
         }
+
+        return "";
     }
 
-    private void printRow(PlayerIcon[] columns) {
-        for (PlayerIcon field : columns) {
-            Object fieldValue = field != null ? field : " ";
-            PRINTER.print(fieldValue);
-//            Add separator
-            PRINTER.print(SEPARATOR);
-        }
+    public boolean isDraw(){
+        return Arrays.stream(this.table).noneMatch(Objects::isNull);
     }
 
-    private void printRowWithSeparator(PlayerIcon[] rows) {
-        printRow(rows);
-        printRowSeparator(PRINTER);
-    }
-
-    private void printRowSeparator(PrintStream printer) {
-        printer.println(ROWS_SEPARATOR);
+    private boolean checkWon(PlayerIcon playerIcon) {
+        return false;
     }
 }

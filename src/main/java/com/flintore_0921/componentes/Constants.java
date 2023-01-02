@@ -2,7 +2,7 @@ package com.flintore_0921.componentes;
 
 public interface Constants {
 
-    interface AppManager {
+    interface Separators {
         String SEPARATOR = "|";
 
         /*Lines separator*/ String ROWS_SEPARATOR = "-+-+-";
@@ -12,9 +12,12 @@ public interface Constants {
         int TABLE_LENGTH = 9;
         int TABLE_ROWS = 3;
         int TABLE_COLUMNS = 3;
+
+        String EMPTY_MOVE = " ";
+
     }
 
-    interface Menu {
+    interface Menu extends Separators{
         int EXIT_VALUE = 0;
         int FAIL_START_VALUE = -1;
 
@@ -46,11 +49,7 @@ public interface Constants {
         String NOT_ICON_EDITED = "No se pudo editar el icono";
     }
 
-    /**
-     * Enum of table position.
-     */
-    @Deprecated
-    enum ETablePosition {
-        X, Y
+    interface TicTacGame {
+        int PLAYERS_EXPECTED = 2;
     }
 }

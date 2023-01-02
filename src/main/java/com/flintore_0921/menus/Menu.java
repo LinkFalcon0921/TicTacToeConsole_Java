@@ -1,4 +1,4 @@
-package com.flintore_0921.menues;
+package com.flintore_0921.menus;
 
 import com.flintore_0921.componentes.Constants;
 

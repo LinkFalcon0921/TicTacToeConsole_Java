@@ -1,18 +1,21 @@
-package com.flintore_0921.menues;
+package com.flintore_0921.menus;
 
 import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
-public class MainMenu extends Menu {
+import static com.flintore_0921.componentes.Constants.*;
 
-    private static final int PLAYERS_EXPECTED = 2;
+public class MainMenu extends Menu {
 
     /*Key values for each menu.*/
     private interface MenuKey {
         int KEY_GAME_MENU = 1;
         int KEY_PLAYER_MENU = 2;
+
+        String OPTION_START_GAME = "Iniciar partida";
+        String OPTION_PLAYER_MENU = "Jugadores";
     }
 
     private final Map<Integer, Menu> mapMenu;
@@ -20,6 +23,7 @@ public class MainMenu extends Menu {
     public MainMenu() {
         super();
         this.mapMenu = new HashMap<>();
+        // TODO: 1/2/2023 remove it
         this.mapMenu.put(MenuKey.KEY_GAME_MENU, new PlayerMenu());
         this.mapMenu.put(MenuKey.KEY_PLAYER_MENU, new PlayerMenu());
     }
@@ -27,6 +31,7 @@ public class MainMenu extends Menu {
     public MainMenu(PrintStream printer, Scanner scannerResponse) {
         super(printer, scannerResponse);
         this.mapMenu = new HashMap<>();
+        // TODO: 1/2/2023 remove it
         this.mapMenu.put(MenuKey.KEY_GAME_MENU, new PlayerMenu(printer, scannerResponse));
         this.mapMenu.put(MenuKey.KEY_PLAYER_MENU, new PlayerMenu(printer, scannerResponse));
     }
@@ -38,8 +43,8 @@ public class MainMenu extends Menu {
         do {
             try {
                 println("Elija una opcion:");
-                println("1. Iniciar partida.");
-                println("2. Menu Jugadores.");
+                println(setOptionMenu(MenuKey.KEY_GAME_MENU, MenuKey.OPTION_START_GAME));
+                println(setOptionMenu(MenuKey.KEY_PLAYER_MENU, MenuKey.OPTION_PLAYER_MENU));
                 println(setOptionMenu(EXIT_VALUE, OPTION_EXIT));
 
                 option = this.INPUT_RESPONSE.nextInt();
@@ -52,7 +57,7 @@ public class MainMenu extends Menu {
 
                 switch (menuSelected) {
                     case MenuKey.KEY_GAME_MENU -> startGame();
-                    case EXIT_VALUE -> {}
+                    case EXIT_VALUE -> {/*do nothing*/}
                     default -> callMenu(menuSelected);
                 }
 
@@ -76,8 +81,8 @@ public class MainMenu extends Menu {
     }
 
     private boolean isTherePlayersToPlay() {
-        final PlayerMenu playerMenu = (PlayerMenu) this.mapMenu.get(MenuKey.KEY_PLAYER_MENU);
-        return playerMenu.therePlayersToPlay(PLAYERS_EXPECTED);
+        final PlayerMenu playerMenu = getMenu(MenuKey.KEY_PLAYER_MENU);
+        return playerMenu.therePlayersToPlay(TicTacGame.PLAYERS_EXPECTED);
     }
 
     private void callMenu(int selected) {
@@ -85,6 +90,18 @@ public class MainMenu extends Menu {
             return;
         }
 
-        this.mapMenu.get(selected).printMenu();
+        getMenu(selected).printMenu();
+    }
+
+    //    Method to map menus
+    @SuppressWarnings("unused")
+    private <M extends Menu> M getMenu(Class<M> cExpected, final int keyMenu) {
+        return cExpected.cast(this.mapMenu.get(keyMenu));
+    }
+
+    /*Cast the */
+    @SuppressWarnings("unchecked")
+    private <M extends Menu> M getMenu(final int keyMenu) {
+        return (M) this.mapMenu.get(keyMenu);
     }
 }
