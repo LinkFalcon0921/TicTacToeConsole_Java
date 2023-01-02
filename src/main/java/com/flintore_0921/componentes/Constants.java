@@ -5,8 +5,7 @@ public interface Constants {
     interface AppManager {
         String SEPARATOR = "|";
 
-        /*Lines separator*/
-        String ROWS_SEPARATOR = "-+-+-";
+        /*Lines separator*/ String ROWS_SEPARATOR = "-+-+-";
     }
 
     interface Table {
@@ -21,10 +20,30 @@ public interface Constants {
 
         String LINE_SEPARATOR = "-";
 
-        int COUNT_SEPARATOR_LENGTH = 12;
+        int COUNT_SEPARATOR_LENGTH = 20;
 
-        //        messages
-        String DEFAULT_INVALID_OPTION_MESSAGE = "Seleccione una opcion valida";
+        int MIN_USERNAME_LENGTH = 3;
+
+        // OPTIONS
+        String OPTION_EXIT = "Salir";
+
+
+        // MESSAGES
+        String DEFAULT_INVALID_OPTION_MESSAGE = "Seleccione una opcion valida.";
+        String NO_PLAYERS_REGISTERED_MESSAGE = "No hay jugadores registrados.";
+        String MAX_PLAYERS_REACHED_MESSAGE = "No se pueden agregar mas jugadores.";
+
+        String PLAYER_NAME_LENGTH_RULE_MESSAGE = "Nombre del jugador debe contener al menos 3 digitos.";
+
+        String INVALID_USERNAME_MESSAGE = "Digite un nombre valido";
+
+        String USERNAME_ALREADY_USED_MESSAGE = "Este nombre ya existe. Utilice otro.";
+
+        String PLAYER_ADDED_SUCCESSFULLY_MESSAGE = "Jugador agragado satisfactiamente.";
+        String PLAYER_NOT_ADDED_MESSAGE = "No fue posible agragar al jugador.";
+        String PLAYER_SAME_NAME_MESSAGE = "Ya cuenta con este nombre.";
+        String ICONS_NOT_AVAILABLE_MESSAGE = "No hay iconos disponibles.";
+        String NOT_ICON_EDITED = "No se pudo editar el icono";
     }
 
     /**

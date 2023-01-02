@@ -2,6 +2,7 @@ package com.flintore_0921.managers;
 
 import com.flintore_0921.componentes.PlayerIcon;
 
+import java.lang.invoke.VarHandle;
 import java.util.*;
 
 public class PlayerManager {
@@ -11,21 +12,25 @@ public class PlayerManager {
         this.players = new HashMap<>();
     }
 
-    public boolean addPlayer(String playerName, PlayerIcon icon) {
+    /**Return true if player not exists.*/
+    public boolean addPlayer(String  playerName, PlayerIcon icon) {
         if (containsPlayer(playerName)) {
             return false;
         }
 
-        return this.players.put(playerName, icon) != null;
+        return this.players.put(playerName, icon) == null;
     }
 
-    public Collection<String> getUserNames() {
-        return this.players.keySet();
+    public List<String> getUserNames() {
+        return new ArrayList<>(this.players.keySet());
     }
 
     public List<PlayerIcon> getAvailableIcons() {
-        List<PlayerIcon> availableIcons = Arrays.asList(PlayerIcon.values());
-        availableIcons.retainAll(this.players.values());
+        List<PlayerIcon> availableIcons = new ArrayList<>(List.of(PlayerIcon.values())),
+//                label: Used icons
+            usedIcons = new ArrayList<>(this.players.values());
+
+        availableIcons.removeAll(usedIcons);
 
         return availableIcons;
     }

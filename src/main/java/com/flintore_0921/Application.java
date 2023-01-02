@@ -1,35 +1,19 @@
 package com.flintore_0921;
 
 import com.flintore_0921.componentes.PlayerIcon;
-import com.flintore_0921.managers.TicTacToeManager;
+import com.flintore_0921.menues.MainMenu;
 
 public class Application {
-    private static TicTacToeManager ticTacToeManager;
+//    Main Menu class
+    private static MainMenu menuApp;
 
     private static PlayerIcon lastIconPlayed;
 
     public static void main(String[] args) {
 //        Initialize variables.
-        ticTacToeManager = new TicTacToeManager(System.out);
+        menuApp = new MainMenu();
 
-        printMenu();
-
-
-    }
-
-    private static void printMenu() {
-        int option = -1;
-
-
-    }
-
-
-    //    Printers
-    private static void println(Object value){
-        System.out.println(value);
-    }
-
-    private static void print(Object value){
-        System.out.print(value);
+//        label start app
+        menuApp.printMenu();
     }
 }
