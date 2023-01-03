@@ -50,7 +50,7 @@ public class MainMenu extends Menu {
                 option = this.INPUT_RESPONSE.nextInt();
 
                 if (!validate(option, this.mapMenu.size())) {
-                    throw new Exception();
+                    callInvalidOptionException();
                 }
 
                 final int menuSelected = option;

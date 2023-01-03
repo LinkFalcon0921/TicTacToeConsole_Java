@@ -17,7 +17,7 @@ public interface Constants {
 
     }
 
-    interface Menu extends Separators{
+    interface Menu extends Separators {
         int EXIT_VALUE = 0;
         int FAIL_START_VALUE = -1;
 
@@ -38,7 +38,7 @@ public interface Constants {
 
         String PLAYER_NAME_LENGTH_RULE_MESSAGE = "Nombre del jugador debe contener al menos 3 digitos.";
 
-        String INVALID_USERNAME_MESSAGE = "Digite un nombre valido";
+        String INVALID_USERNAME_MESSAGE = "Digite un nombre valido.";
 
         String USERNAME_ALREADY_USED_MESSAGE = "Este nombre ya existe. Utilice otro.";
 
@@ -46,7 +46,8 @@ public interface Constants {
         String PLAYER_NOT_ADDED_MESSAGE = "No fue posible agragar al jugador.";
         String PLAYER_SAME_NAME_MESSAGE = "Ya cuenta con este nombre.";
         String ICONS_NOT_AVAILABLE_MESSAGE = "No hay iconos disponibles.";
-        String NOT_ICON_EDITED = "No se pudo editar el icono";
+        String NOT_ICON_EDITED = "No se pudo editar el icono.";
+        String NOT_NAME_EDITED = "No se pudo editar el nombre.";
     }
 
     interface TicTacGame {

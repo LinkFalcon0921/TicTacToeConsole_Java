@@ -1,6 +1,10 @@
 package com.flintore_0921.managers;
 
+import com.flintore_0921.componentes.Constants;
+import com.flintore_0921.componentes.Constants.TicTacGame;
+import com.flintore_0921.componentes.Player;
 import com.flintore_0921.componentes.PlayerIcon;
+import com.flintore_0921.componentes.results.GameResult;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -16,10 +20,11 @@ public class TicTacToeManager {
     private final PlayerIcon[][] table;
 
     private final PlayerManager playerManager;
+
     private TurnManager turns;
 
     public static void initiate(PlayerManager playerManager) {
-        if(Objects.nonNull(manager)){
+        if (Objects.nonNull(manager)) {
             return;
         }
 
@@ -27,7 +32,7 @@ public class TicTacToeManager {
     }
 
     /**
-     * label: Use initiate methods before use it.
+     * <b>Label:</b> Use initiate methods before use it.
      */
     public static TicTacToeManager getInstance() {
         return manager;
@@ -61,23 +66,30 @@ public class TicTacToeManager {
     }
 
     // TODO: 1/2/2023  
-    public String hasWon(){
+    public GameResult hasWon() {
+        GameResult result = null;
 
-        Iterator<PlayerIcon> playerIconIterator = this.playerManager.getAvailableIcons().iterator();
+        Iterator<Player> playerIconIterator = this.playerManager.getPLayers().iterator();
         int cursor = 0;
 
         while (playerIconIterator.hasNext()) {
-            PlayerIcon playerIcon = playerIconIterator.next();
+            Player player = playerIconIterator.next();
 
-            if(checkWon(playerIcon)){
-                return "";
+            if (checkWon(player.getPlayerIcon())) {
+                result = new GameResult(player.getPlayerName(), GameResult.Result.WIN);
+                break;
+            }
+
+            if (isDraw()) {
+                result = GameResult.DRAW_RESULT;
+                break;
             }
         }
 
-        return "";
+        return result;
     }
 
-    public boolean isDraw(){
+    public boolean isDraw() {
         return Arrays.stream(this.table).noneMatch(Objects::isNull);
     }
 

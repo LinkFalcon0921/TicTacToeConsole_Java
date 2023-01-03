@@ -1,6 +1,7 @@
 package com.flintore_0921.menus;
 
 import com.flintore_0921.componentes.PlayerIcon;
+import com.flintore_0921.managers.PlayerManager;
 import com.flintore_0921.managers.TicTacToeManager;
 
 import java.io.PrintStream;
@@ -15,13 +16,13 @@ public class GameMenu extends Menu {
 
     private final TicTacToeManager gameManager;
 
-    public GameMenu(Collection<String> players) {
+    public GameMenu(PlayerManager players) {
         super();
         TicTacToeManager.initiate(players);
         this.gameManager = TicTacToeManager.getInstance();
     }
 
-    public GameMenu(PrintStream PRINTER, Scanner responseReceiver, Collection<String> players) {
+    public GameMenu(PrintStream PRINTER, Scanner responseReceiver, PlayerManager players) {
         super(PRINTER, responseReceiver);
         TicTacToeManager.initiate(players);
         this.gameManager = TicTacToeManager.getInstance();

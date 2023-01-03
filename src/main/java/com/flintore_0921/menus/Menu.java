@@ -92,4 +92,8 @@ abstract class Menu implements Constants.Menu {
     protected String setOptionMenu(final int option, final String message) {
         return String.format("%d. %s.", option, message);
     }
+
+    protected static void callInvalidOptionException() throws Exception {
+        throw new Exception();
+    }
 }

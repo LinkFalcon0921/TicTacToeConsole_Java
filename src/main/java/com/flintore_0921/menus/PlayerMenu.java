@@ -1,5 +1,6 @@
 package com.flintore_0921.menus;
 
+import com.flintore_0921.componentes.Player;
 import com.flintore_0921.componentes.PlayerIcon;
 import com.flintore_0921.managers.PlayerManager;
 
@@ -50,14 +51,13 @@ public class PlayerMenu extends Menu {
 
                 option = getOptionSelected();
 
-                final int actionSelected = option;
-
-                switch (actionSelected) {
+                switch (option) {
                     case MenuKey.KEY_ADD_PLAYER -> addUserMenu();
                     case MenuKey.KEY_EDIT_PLAYER -> editUserMenu();
                     case MenuKey.KEY_REMOVE_PLAYER -> removeUserMenu();
+
                     case EXIT_VALUE -> {/*Do nothing*/}
-                    default -> throw new Exception();
+                    default -> callInvalidOptionException();
                 }
             } catch (Exception e) {
                 showDefaultMessageInvalidOption();
@@ -76,21 +76,21 @@ public class PlayerMenu extends Menu {
 
     //    Add user case menu
     private void addUserMenu() {
-
-        boolean flagAddNew = false;
-        String playerName = null;
-        int option = -1;
-        PlayerIcon playerIcon = null;
-
         List<PlayerIcon> availableIcons = this.playerManager.getAvailableIcons();
 
         if (!whereIcons(availableIcons)) {
             return;
         }
 
+        Player player = null;
+        int option = -1;
+
         do {
             try {
-                printLineSeparator();
+                fullLineSeparator();
+
+                String playerName;
+
                 playerName = getUserName(String.format("Ingrese el nombre del jugador. %d para salir.: ", EXIT_VALUE));
 
                 /*label Continue asking if username not apply the rules.*/
@@ -103,20 +103,27 @@ public class PlayerMenu extends Menu {
                     return;
                 }
 
+//                Label: Assign player instance
+                player = new Player();
+                player.setPlayerName(playerName);
+
                 /*label: Check if contains the typed username*/
-                if (this.playerManager.containsPlayer(playerName)) {
+                if (this.playerManager.containsPlayer(player)) {
                     printMessageWithSeparators(USERNAME_ALREADY_USED_MESSAGE);
                     continue;
                 }
 
                 do {
                     try {
-                        printLineSeparator();
+                        fullLineSeparator();
+
+                        PlayerIcon playerIcon;
+
                         println("Seleccione un icono: ");
                         printAsList(availableIcons);
                         println(setOptionMenu(EXIT_VALUE, OPTION_EXIT));
 
-                        //                label: Get the option from user
+                        // label: Get the icon selected from user
                         option = getOptionSelected();
 
                         /*label: Exit if the user type 0.*/
@@ -124,31 +131,30 @@ public class PlayerMenu extends Menu {
                             return;
                         }
 
-                        flagAddNew = validate(option, availableIcons.size());
-
-                        if (!flagAddNew) {
-                            throw new Exception();
+                        if (!validate(option, availableIcons.size())) {
+                            callInvalidOptionException();
                         }
 
                         // label Get the selected icon
                         playerIcon = availableIcons.get(option - 1);
+                        player.setPlayerIcon(playerIcon);
 
                     } catch (Exception e) {
                         showDefaultMessageInvalidOption();
                     }
 
                     // label: end icon while if choose a icon
-                } while (!flagAddNew);
+                } while (Objects.isNull(player));
 
             } catch (Exception e) {
                 showDefaultMessageInvalidOption();
             }
 
             // label: end name while if choose a icon
-        } while (!flagAddNew);
+        } while (!Objects.isNull(player));
 
         //label: Add the player
-        if (this.playerManager.addPlayer(playerName, playerIcon)) {
+        if (this.playerManager.addPlayer(player)) {
             printMessageWithSeparators(PLAYER_ADDED_SUCCESSFULLY_MESSAGE);
         } else {
             printMessageWithSeparators(PLAYER_NOT_ADDED_MESSAGE);
@@ -159,14 +165,13 @@ public class PlayerMenu extends Menu {
     /*Edit menu method*/
 
     private void editUserMenu() {
-        String userName = null;
-        int option = -1;
-
-        List<String> userNames = this.playerManager.getUserNames();
+        List<String> userNames = this.playerManager.getPlayerNames();
 
         if (!whereUsers(userNames)) {
             return;
         }
+
+        int option = -1;
 
         do {
             try {
@@ -177,11 +182,11 @@ public class PlayerMenu extends Menu {
                 option = getOptionSelected();
 
                 /*label: check if user cancel the action*/
-                if (isExit(option)) {
-                    return;
+                if (!validate(option, userNames.size())) {
+                    callInvalidOptionException();
                 }
 
-                userName = userNames.get(option - 1);
+                String userName = userNames.get(option - 1);
 
                 /*label: Max options for edit choose*/
                 final int maxOptionsEdit = 2;
@@ -197,38 +202,42 @@ public class PlayerMenu extends Menu {
 
                         option = getOptionSelected();
 
+                        if (!validate(option, maxOptionsEdit)) {
+                            callInvalidOptionException();
+                        }
+
                         switch (option) {
                             case MenuKey.KEY_ADD_PLAYER -> editNameMenu(userName);
                             case MenuKey.KEY_EDIT_PLAYER -> editIconMenu(userName);
                             case EXIT_VALUE -> {/*Do nothing*/}
-                            default -> throw new Exception();
+                            default -> callInvalidOptionException();
                         }
                     } catch (Exception e) {
                         showDefaultMessageInvalidOption();
                     }
                     // label end options edit loop
-                } while (!validate(option, maxOptionsEdit) && !isExit(option));
+                } while (!isExit(option));
 
             } catch (Exception e) {
                 showDefaultMessageInvalidOption();
             }
             // label end start loop
-        } while (!validate(option, userNames.size()) && !isExit(option));
+        } while (!isExit(option));
 
         fullLineSeparatorSpace();
     }
+
+
     /*Edit action method*/
 
     private void editNameMenu(String name) {
-        printLineSeparator();
-        printLineSeparator();
-        boolean flagNewName = false;
+        fullLineSeparatorSpace();
 
-        String newName = null;
+        Player player = null;
 
         do {
             try {
-                newName = getUserName(String.format("Ingrese el nombre del jugador. %d para salir.: ", EXIT_VALUE));
+                String newName = getUserName(String.format("Ingrese el nombre del jugador. %d para salir.: ", EXIT_VALUE));
 
                 if (Objects.isNull(newName)) {
                     continue;
@@ -240,31 +249,28 @@ public class PlayerMenu extends Menu {
                     continue;
                 }
 
+//                Set the new data player
+                player = new Player();
+                player.setPlayerName(newName);
+
+                if (this.playerManager.editPlayer(name, player)) {
+                    printMessageWithSeparators("Nombre editado exitosamente: ".concat(newName));
+                } else {
+                    printMessageWithSeparators("No se pudo editar el nombre.");
+                }
+
                 /*label set the name as valid*/
-                flagNewName = true;
             } catch (Exception e) {
                 showDefaultMessageInvalidOption();
             }
 
-        } while (!flagNewName);
-
-        if (Objects.nonNull(newName) && this.playerManager.editUser(name, newName)) {
-            printMessageWithSeparators("Nombre editado exitosamente: ".concat(newName));
-        } else {
-            printMessageWithSeparators("No se pudo editar el nombre");
-        }
+        } while (Objects.isNull(player));
 
         fullLineSeparatorSpace();
     }
     /*Edit action method*/
 
     private void editIconMenu(String name) {
-        fullLineSeparatorSpace();
-
-        boolean flagEdit = false;
-        PlayerIcon playerIcon = null;
-        int iconSelected = -1;
-
         List<PlayerIcon> availableIcons = this.playerManager.getAvailableIcons();
 
         if (availableIcons.isEmpty()) {
@@ -272,45 +278,54 @@ public class PlayerMenu extends Menu {
             return;
         }
 
+        fullLineSeparatorSpace();
+
+        int iconSelected = -1;
+        Player player = null;
+
         do {
             try {
                 print("Seleccione el nuevo icono: ");
+                printAsList(availableIcons);
+
                 iconSelected = getOptionSelected();
 
-                flagEdit = validate(iconSelected, availableIcons.size());
-
 //                label: If the option is not valid.
-                if (!flagEdit) {
-                    throw new Exception();
+                if (!validate(iconSelected, availableIcons.size())) {
+                    callInvalidOptionException();
                 }
 
-                playerIcon = availableIcons.get(iconSelected - 1);
+                PlayerIcon playerIcon = availableIcons.get(iconSelected - 1);
+
+                player = new Player();
+                player.setPlayerIcon(playerIcon);
+
+                if (this.playerManager.editPlayer(name, player)) {
+                    printMessageWithSeparators(String.format("Icono editado exitosamente: %s : %s", name, playerIcon));
+                } else {
+                    printMessageWithSeparators(NOT_ICON_EDITED);
+                }
+
             } catch (Exception e) {
                 showDefaultMessageInvalidOption();
             }
 
-        } while (!flagEdit);
+        } while (Objects.isNull(player));
 
-        if (Objects.nonNull(playerIcon) && this.playerManager.editUser(name, playerIcon)) {
-            printMessageWithSeparators(String.format("Icono editado exitosamente: %s : %s", name, playerIcon));
-        } else {
-            printMessageWithSeparators(NOT_ICON_EDITED);
-        }
 
         fullLineSeparatorSpace();
     }
 
     /*Remove menu method*/
     private void removeUserMenu() {
-
-        String userName = null;
-        int nameSelected = -1;
-
-        final List<String> userNames = this.playerManager.getUserNames();
+        final List<String> userNames = this.playerManager.getPlayerNames();
 
         if (!whereUsers(userNames)) {
             return;
         }
+
+        int nameSelected = -1;
+        Player player = null;
 
         do {
             try {
@@ -319,22 +334,26 @@ public class PlayerMenu extends Menu {
 
                 nameSelected = getOptionSelected();
 
+                /*label: If type 0*/
                 if (isExit(nameSelected)) {
                     return;
                 }
 
-                userName = userNames.get(nameSelected - 1);
+                String playerName = userNames.get(nameSelected - 1);
+
+                player = new Player();
+                player.setPlayerName(playerName);
+
+                if (this.playerManager.removePlayer(player)) {
+                    printMessageWithSeparators("Jugador eliminado exitosamente.");
+                } else {
+                    printMessageWithSeparators("No se pudo eliminar el jugador.");
+                }
 
             } catch (Exception e) {
                 showDefaultMessageInvalidOption();
             }
-        } while (!validate(nameSelected, userNames.size()));
-
-        if (this.playerManager.removePlayer(userName)) {
-            printMessageWithSeparators("Jugador eliminado exitosamente.");
-        } else {
-            printMessageWithSeparators("No se pudo eliminar el jugador.");
-        }
+        } while (Objects.isNull(player));
 
         fullLineSeparatorSpace();
     }
@@ -392,7 +411,6 @@ public class PlayerMenu extends Menu {
     }
 
     /*True is icon list is not empty*/
-
     private boolean whereIcons(List<PlayerIcon> availableIcons) {
         if (availableIcons.isEmpty()) {
             printMessageWithSeparators(MAX_PLAYERS_REACHED_MESSAGE);
@@ -400,8 +418,8 @@ public class PlayerMenu extends Menu {
         }
         return true;
     }
-    /*True is user list is not empty*/
 
+    /*True is player list is not empty*/
     private boolean whereUsers(List<String> userNames) {
         if (userNames.isEmpty()) {
             printMessageWithSeparators(NO_PLAYERS_REGISTERED_MESSAGE);

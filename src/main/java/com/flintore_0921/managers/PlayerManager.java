@@ -1,66 +1,96 @@
 package com.flintore_0921.managers;
 
+import com.flintore_0921.componentes.Player;
 import com.flintore_0921.componentes.PlayerIcon;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 public class PlayerManager {
-    private final Map<String, PlayerIcon> players;
+    private final Set<Player> players;
 
     public PlayerManager() {
-        this.players = new HashMap<>();
+        this.players = new HashSet<>();
     }
 
-    /**Return true if player not exists.*/
-    public boolean addPlayer(String  playerName, PlayerIcon icon) {
-        if (containsPlayer(playerName)) {
+    /**
+     * Return true if player not exists.
+     */
+    public boolean addPlayer(Player player) {
+        if (containsPlayer(player)) {
             return false;
         }
 
-        return this.players.put(playerName, icon) == null;
+        return this.players.add(player);
     }
 
     public List<String> getPlayerNames() {
-        return new ArrayList<>(this.players.keySet());
+        return getPLayers().stream().map(Player::getPlayerName).toList();
     }
 
     public List<PlayerIcon> getAvailableIcons() {
-        List<PlayerIcon> availableIcons = new ArrayList<>(List.of(PlayerIcon.values())),
-//                label: Used icons
-            usedIcons = new ArrayList<>(this.players.values());
+        List<PlayerIcon> availableIcons = new ArrayList<>(Arrays.asList(PlayerIcon.values()));
 
-        availableIcons.removeAll(usedIcons);
+        if (getPLayers().isEmpty()) {
+            return availableIcons;
+        }
+
+        List<PlayerIcon> playerIcons = getPLayers().stream()
+                .map(Player::getPlayerIcon)
+                .toList();
+
+        availableIcons.removeAll(playerIcons);
 
         return availableIcons;
     }
 
-    public boolean editPlayer(String name, String newName) {
-        if (!containsPlayer(name)) {
+    public boolean editPlayer(String playerName, Player player) {
+        if (Objects.isNull(playerName) || !containsPlayer(player)) {
             return false;
         }
 
-        PlayerIcon playerIcon = this.players.remove(name);
-        return this.players.put(newName, playerIcon) != null;
-    }
+        Optional<Player> optionalPlayer = Optional.empty();
 
-    public boolean editPlayer(String name, PlayerIcon newIcon) {
-        if (!containsPlayer(name)) {
-            return false;
+        try {
+            optionalPlayer = getPLayers().stream()
+                    .filter(pl -> pl.getPlayerName().equals(playerName))
+                    .findFirst();
+
+            optionalPlayer.ifPresent(editPlayerPresent(player));
+
+        } catch (Exception ignored) {
         }
 
-        PlayerIcon previousPlayerIcon = this.players.get(name);
-        return this.players.replace(name, previousPlayerIcon, newIcon);
+        return optionalPlayer.isPresent();
     }
 
-    public boolean containsPlayer(String name) {
-        return this.players.containsKey(name);
+    private Consumer<Player> editPlayerPresent(Player player) {
+        return pl -> {
+            String newPlayerName = player.getPlayerName();
+            if (Objects.nonNull(newPlayerName)) {
+                pl.setPlayerName(newPlayerName);
+            }
+
+            PlayerIcon playerIcon = player.getPlayerIcon();
+            if (Objects.nonNull(playerIcon)) {
+                pl.setPlayerIcon(playerIcon);
+            }
+        };
     }
 
-    public boolean removePlayer(String playerName) {
-        return this.players.remove(playerName) != null;
+    public boolean containsPlayer(Player player) {
+        return Objects.nonNull(player) && getPLayers().contains(player);
+    }
+
+    public boolean removePlayer(Player player) {
+        return Objects.nonNull(player) && this.players.remove(player);
     }
 
     public int getTotalPlayers() {
-        return this.players.size();
+        return getPLayers().size();
+    }
+
+    public Collection<Player> getPLayers() {
+        return new HashSet<>(this.players);
     }
 }
