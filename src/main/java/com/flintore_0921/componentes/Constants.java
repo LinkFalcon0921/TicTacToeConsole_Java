@@ -3,18 +3,17 @@ package com.flintore_0921.componentes;
 public interface Constants {
 
     interface Separators {
+        /*Lines separator*/
         String SEPARATOR = "|";
-
-        /*Lines separator*/ String ROWS_SEPARATOR = "-+-+-";
+        String ROWS_SEPARATOR = "-+-+-";
     }
 
     interface Table {
         int TABLE_LENGTH = 9;
         int TABLE_ROWS = 3;
         int TABLE_COLUMNS = 3;
-
         String EMPTY_MOVE = " ";
-
+        PlayerIcon[][] EMPTY_TABLE = new PlayerIcon[TABLE_ROWS][TABLE_COLUMNS];
     }
 
     interface Menu extends Separators {

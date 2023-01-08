@@ -5,6 +5,7 @@ import com.flintore_0921.componentes.Constants.TicTacGame;
 import com.flintore_0921.componentes.Player;
 import com.flintore_0921.componentes.PlayerIcon;
 import com.flintore_0921.componentes.results.GameResult;
+import com.flintore_0921.utils.TableChecker;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -20,6 +21,8 @@ public class TicTacToeManager {
     private final PlayerIcon[][] table;
 
     private final PlayerManager playerManager;
+
+    private final TableChecker tableCheckerManager;
 
     private TurnManager turns;
 
@@ -42,6 +45,7 @@ public class TicTacToeManager {
         this.playerManager = playerManager;
         this.turns = new TurnManager(playerManager.getTotalPlayers());
         this.table = new PlayerIcon[TABLE_ROWS][TABLE_COLUMNS];
+        this.tableCheckerManager = TableChecker.getInstance();
     }
 
     public void addNextMove(int xPos, int yPos, PlayerIcon playerMove) {
@@ -94,6 +98,6 @@ public class TicTacToeManager {
     }
 
     private boolean checkWon(PlayerIcon playerIcon) {
-        return false;
+        return this.tableCheckerManager.checkIsMatchInARow(this.table, playerIcon);
     }
 }
