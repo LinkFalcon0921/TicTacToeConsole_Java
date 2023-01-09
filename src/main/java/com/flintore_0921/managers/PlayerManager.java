@@ -7,10 +7,20 @@ import java.util.*;
 import java.util.function.Consumer;
 
 public class PlayerManager {
+
+    private static PlayerManager manager;
     private final Set<Player> players;
 
-    public PlayerManager() {
+    private PlayerManager() {
         this.players = new HashSet<>();
+    }
+
+    public static PlayerManager getInstance(){
+        if(Objects.isNull(manager)){
+            manager = new PlayerManager();
+        }
+
+        return manager;
     }
 
     /**
@@ -25,17 +35,17 @@ public class PlayerManager {
     }
 
     public List<String> getPlayerNames() {
-        return getPLayers().stream().map(Player::getPlayerName).toList();
+        return getPlayers().stream().map(Player::getPlayerName).toList();
     }
 
     public List<PlayerIcon> getAvailableIcons() {
         List<PlayerIcon> availableIcons = new ArrayList<>(Arrays.asList(PlayerIcon.values()));
 
-        if (getPLayers().isEmpty()) {
+        if (getPlayers().isEmpty()) {
             return availableIcons;
         }
 
-        List<PlayerIcon> playerIcons = getPLayers().stream()
+        List<PlayerIcon> playerIcons = getPlayers().stream()
                 .map(Player::getPlayerIcon)
                 .toList();
 
@@ -52,7 +62,7 @@ public class PlayerManager {
         Optional<Player> optionalPlayer = Optional.empty();
 
         try {
-            optionalPlayer = getPLayers().stream()
+            optionalPlayer = getPlayers().stream()
                     .filter(pl -> pl.getPlayerName().equals(playerName))
                     .findFirst();
 
@@ -79,7 +89,7 @@ public class PlayerManager {
     }
 
     public boolean containsPlayer(Player player) {
-        return Objects.nonNull(player) && getPLayers().contains(player);
+        return Objects.nonNull(player) && getPlayers().contains(player);
     }
 
     public boolean removePlayer(Player player) {
@@ -87,10 +97,10 @@ public class PlayerManager {
     }
 
     public int getTotalPlayers() {
-        return getPLayers().size();
+        return getPlayers().size();
     }
 
-    public Collection<Player> getPLayers() {
+    public Collection<Player> getPlayers() {
         return new HashSet<>(this.players);
     }
 }

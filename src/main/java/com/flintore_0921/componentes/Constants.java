@@ -4,6 +4,7 @@ public interface Constants {
 
     interface Separators {
         /*Lines separator*/
+        String EMPTY_SEPARATOR = "";
         String SEPARATOR = "|";
         String ROWS_SEPARATOR = "-+-+-";
     }
@@ -13,6 +14,8 @@ public interface Constants {
         int TABLE_ROWS = 3;
         int TABLE_COLUMNS = 3;
         String EMPTY_MOVE = " ";
+
+//        You must clone it.
         PlayerIcon[][] EMPTY_TABLE = new PlayerIcon[TABLE_ROWS][TABLE_COLUMNS];
     }
 

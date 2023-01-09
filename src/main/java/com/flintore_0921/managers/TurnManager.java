@@ -8,8 +8,9 @@ public class TurnManager {
         this.MAX_COUNTER = MAX_COUNTER;
     }
 
+    /**Get the next turn and update the value.*/
     public int nextTurn(){
-        return this.position++ % this.MAX_COUNTER;
+        return this.position = ++this.position % this.MAX_COUNTER;
     }
 
     public int getActualPlayerTurn(){

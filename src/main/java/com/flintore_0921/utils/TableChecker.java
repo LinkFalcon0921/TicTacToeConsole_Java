@@ -20,7 +20,7 @@ public class TableChecker {
     private TableChecker() {
     }
 
-    public boolean checkIsMatchInARow(final PlayerIcon[][] table, final PlayerIcon playerIcon){
+    public boolean checkIsMatchInARow(final PlayerIcon[][] table, final PlayerIcon playerIcon) {
         return this.matchHorizontal(table, playerIcon) ||
                 this.matchVertically(table, playerIcon) ||
                 this.matchDiagonally(table, playerIcon);
@@ -60,7 +60,7 @@ public class TableChecker {
 
                 match = playerIcon.equals(icon);
 
-                /*End if false in a case*/
+                /*label: End if false in a case*/
                 if (!match) {
                     break;
                 }
@@ -75,46 +75,35 @@ public class TableChecker {
         return match;
     }
 
-    /**Check if the table has the player icon in a row based in the principal and last possible diagonal. <br/>Return true
-     * if last expression matches otherwise false. */
+    /**
+     * Check if the table has the player icon in a row based in the principal and last possible diagonal.
+     * <br/>Return true if last expression matches otherwise false.
+     */
     public boolean matchDiagonally(final PlayerIcon[][] table, final PlayerIcon playerIcon) {
         boolean matchDiagonal = false;
+        int columnCount = 0;
 
         for (final PlayerIcon[] iconsRow : table) {
-            matchDiagonal = matchDiagonallyLeft(iconsRow, playerIcon) || matchDiagonallyRight(iconsRow, playerIcon);
+            matchDiagonal = matchDiagonallyLeft(iconsRow, columnCount, playerIcon) ||
+                    matchDiagonallyRight(iconsRow, columnCount, playerIcon);
 
             /*If it does not match*/
             if (!matchDiagonal) {
                 break;
             }
 
+            /*Increase the column value*/
+            columnCount++;
         }
         return matchDiagonal;
     }
 
-    private boolean matchDiagonallyLeft(final PlayerIcon[] iconRow, final PlayerIcon playerIcon) {
-
-        for (int columnLeftRight = 0; columnLeftRight < iconRow.length; columnLeftRight++) {
-            int columnRightLeft = iconRow.length - (columnLeftRight + 1);
-
-            if (iconRow[columnLeftRight].equals(playerIcon)) {
-                return true;
-            }
-
-        }
-
-        return false;
+    private boolean matchDiagonallyLeft(final PlayerIcon[] iconRow, int column, final PlayerIcon playerIcon) {
+        return iconRow[column].equals(playerIcon);
     }
 
-    private boolean matchDiagonallyRight(final PlayerIcon[] iconRow, final PlayerIcon playerIcon) {
-
-        for (int columnRightLeft = iconRow.length - 1; columnRightLeft >= 0; columnRightLeft--) {
-            if (iconRow[columnRightLeft].equals(playerIcon)) {
-                return true;
-            }
-
-        }
-
-        return false;
+    private boolean matchDiagonallyRight(final PlayerIcon[] iconRow, int column, final PlayerIcon playerIcon) {
+        int columnRow = (iconRow.length - column) - 1;
+        return iconRow[columnRow].equals(playerIcon);
     }
 }

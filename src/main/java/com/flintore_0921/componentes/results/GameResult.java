@@ -4,23 +4,25 @@ import java.util.Set;
 
 public final class GameResult {
 
-    public static final GameResult DRAW_RESULT = new GameResult(null, Result.DRAW);
+    public static final GameResult DRAW_RESULT = new GameResult(null, StateResult.DRAW);
+    public static final GameResult STILL_PLAYING_RESULT = new GameResult(null, StateResult.PLAYING);
 
     interface Helpers {
-        Set<Result> DEFAULT_RESULTS = Set.of(
-                Result.DRAW
+        Set<StateResult> DEFAULT_RESULTS = Set.of(
+                StateResult.DRAW
         );
     }
 
-    public enum Result {
+    public enum StateResult {
         WIN,
-        DRAW
+        DRAW,
+        PLAYING
     }
 
     private final String additionalText;
-    private final Result result;
+    private final StateResult result;
 
-    public GameResult(String text, Result result) {
+    public GameResult(String text, StateResult result) {
         this.additionalText = text;
         this.result = result;
     }
@@ -33,6 +35,7 @@ public final class GameResult {
         return switch (this.result) {
             case WIN -> String.format("El ganador es: %s", this.additionalText);
             case DRAW -> String.format("El resultado es un %s", this.result);
+            case PLAYING -> "Aun no hay ganador.";
         };
     }
 

@@ -29,12 +29,12 @@ public class PlayerMenu extends Menu {
 
     public PlayerMenu() {
         super();
-        this.playerManager = new PlayerManager();
+        this.playerManager = PlayerManager.getInstance();
     }
 
     public PlayerMenu(PrintStream printer, Scanner scannerResponse) {
         super(printer, scannerResponse);
-        this.playerManager = new PlayerManager();
+        this.playerManager = PlayerManager.getInstance();
     }
 
     public void printMenu() {
@@ -89,7 +89,7 @@ public class PlayerMenu extends Menu {
             try {
                 fullLineSeparator();
 
-                String playerName;
+                String playerName = null;
 
                 playerName = getUserName(String.format("Ingrese el nombre del jugador. %d para salir.: ", EXIT_VALUE));
 
@@ -144,14 +144,14 @@ public class PlayerMenu extends Menu {
                     }
 
                     // label: end icon while if choose a icon
-                } while (Objects.isNull(player));
+                } while (Objects.isNull(player.getPlayerIcon()));
 
             } catch (Exception e) {
                 showDefaultMessageInvalidOption();
             }
 
             // label: end name while if choose a icon
-        } while (!Objects.isNull(player));
+        } while (Objects.isNull(player));
 
         //label: Add the player
         if (this.playerManager.addPlayer(player)) {
@@ -362,7 +362,7 @@ public class PlayerMenu extends Menu {
     private boolean isValidUserName(final String playerName) {
         String trimmedPlayerName = playerName.trim();
 
-        if (trimmedPlayerName.isBlank() || trimmedPlayerName.length() <= MIN_USERNAME_LENGTH) {
+        if (trimmedPlayerName.isBlank() || trimmedPlayerName.length() < MIN_USERNAME_LENGTH) {
             printMessageWithSeparators(PLAYER_NAME_LENGTH_RULE_MESSAGE);
             return false;
         }

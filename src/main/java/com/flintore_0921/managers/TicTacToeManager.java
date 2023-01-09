@@ -1,15 +1,17 @@
 package com.flintore_0921.managers;
 
 import com.flintore_0921.componentes.Constants;
-import com.flintore_0921.componentes.Constants.TicTacGame;
 import com.flintore_0921.componentes.Player;
 import com.flintore_0921.componentes.PlayerIcon;
 import com.flintore_0921.componentes.results.GameResult;
+import com.flintore_0921.menus.GameMenu;
 import com.flintore_0921.utils.TableChecker;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 import static com.flintore_0921.componentes.Constants.Table.TABLE_COLUMNS;
 import static com.flintore_0921.componentes.Constants.Table.TABLE_ROWS;
@@ -18,7 +20,7 @@ public class TicTacToeManager {
 
     private static TicTacToeManager manager;
 
-    private final PlayerIcon[][] table;
+    private PlayerIcon[][] table;
 
     private final PlayerManager playerManager;
 
@@ -43,17 +45,19 @@ public class TicTacToeManager {
 
     private TicTacToeManager(PlayerManager playerManager) {
         this.playerManager = playerManager;
-        this.turns = new TurnManager(playerManager.getTotalPlayers());
-        this.table = new PlayerIcon[TABLE_ROWS][TABLE_COLUMNS];
         this.tableCheckerManager = TableChecker.getInstance();
     }
 
-    public void addNextMove(int xPos, int yPos, PlayerIcon playerMove) {
-        if (!isSpaceEmpty(xPos, yPos)) {
-            return;
+    public boolean addNextMove(int xPos, int yPos, final PlayerIcon playerMove) {
+        boolean added = false;
+
+        if (isSpaceEmpty(xPos, yPos)) {
+            this.table[xPos][yPos] = playerMove;
+            this.turns.nextTurn();
+            added = true;
         }
 
-        this.table[xPos][yPos] = playerMove;
+        return added;
     }
 
     public boolean isSpaceEmpty(int xPos, int yPos) {
@@ -61,43 +65,73 @@ public class TicTacToeManager {
     }
 
     public PlayerIcon[][] getTable() {
-        final int START_POS = 0;
-        PlayerIcon[][] copyTable = new PlayerIcon[TABLE_ROWS][TABLE_COLUMNS];
-
-        System.arraycopy(this.table, START_POS, copyTable, 0, this.table.length);
-
-        return copyTable;
+        return this.table.clone();
     }
 
     // TODO: 1/2/2023  
     public GameResult hasWon() {
-        GameResult result = null;
 
-        Iterator<Player> playerIconIterator = this.playerManager.getPLayers().iterator();
-        int cursor = 0;
-
-        while (playerIconIterator.hasNext()) {
-            Player player = playerIconIterator.next();
-
+        for (Player player : this.playerManager.getPlayers()) {
             if (checkWon(player.getPlayerIcon())) {
-                result = new GameResult(player.getPlayerName(), GameResult.Result.WIN);
-                break;
-            }
-
-            if (isDraw()) {
-                result = GameResult.DRAW_RESULT;
-                break;
+                return new GameResult(player.getPlayerName(), GameResult.StateResult.WIN);
             }
         }
 
-        return result;
+        if (isDraw()) {
+            return GameResult.DRAW_RESULT;
+        }
+
+        return GameResult.STILL_PLAYING_RESULT;
     }
 
     public boolean isDraw() {
-        return Arrays.stream(this.table).noneMatch(Objects::isNull);
+        return Arrays.stream(this.table)
+                .flatMap(Stream::of)
+                .noneMatch(Objects::isNull);
+    }
+
+
+//    TURN methods
+
+    /**
+     * Requires GameMenu instance. Return null if is an Anonymous class
+     */
+    public Player getActualPlayer(GameMenu menu) {
+        if (menu.getClass().isAnonymousClass()) {
+            return null;
+        }
+
+        final int playerTurn = this.turns.getActualPlayerTurn();
+        int counter = 0;
+
+        Collection<Player> players = this.playerManager.getPlayers();
+
+        for (Player player : players) {
+
+            if (counter++ == playerTurn) {
+                return player;
+            }
+        }
+
+        return null;
+    }
+
+    public boolean hasEnoughPlayer() {
+        int playersCount = playerManager.getTotalPlayers();
+        return playersCount == Constants.TicTacGame.PLAYERS_EXPECTED;
+    }
+
+    public void resetTable() {
+
+        this.table = Arrays.stream(Constants.Table.EMPTY_TABLE)
+                .map(PlayerIcon[]::clone)
+                .toArray(PlayerIcon[][]::new);
+
+        /*Set the turns based the list*/
+        this.turns = new TurnManager(playerManager.getTotalPlayers());
     }
 
     private boolean checkWon(PlayerIcon playerIcon) {
-        return this.tableCheckerManager.checkIsMatchInARow(this.table, playerIcon);
+        return this.tableCheckerManager.checkIsMatchInARow(this.table, playerIcon);p
     }
 }

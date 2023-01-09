@@ -1,5 +1,7 @@
 package com.flintore_0921.menus;
 
+import com.flintore_0921.managers.PlayerManager;
+
 import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,22 +25,26 @@ public class MainMenu extends Menu {
     public MainMenu() {
         super();
         this.mapMenu = new HashMap<>();
-        // TODO: 1/2/2023 remove it
-        this.mapMenu.put(MenuKey.KEY_GAME_MENU, new PlayerMenu());
-        this.mapMenu.put(MenuKey.KEY_PLAYER_MENU, new PlayerMenu());
+        this.setMenus(this.PRINTER, this.INPUT_RESPONSE);
     }
 
     public MainMenu(PrintStream printer, Scanner scannerResponse) {
         super(printer, scannerResponse);
         this.mapMenu = new HashMap<>();
-        // TODO: 1/2/2023 remove it
-        this.mapMenu.put(MenuKey.KEY_GAME_MENU, new PlayerMenu(printer, scannerResponse));
+
+        setMenus(printer, scannerResponse);
+    }
+
+    private void setMenus(PrintStream printer, Scanner scannerResponse) {
+        PlayerManager playerManager = PlayerManager.getInstance();
+        this.mapMenu.put(MenuKey.KEY_GAME_MENU, new GameMenu(printer, scannerResponse, playerManager));
+
         this.mapMenu.put(MenuKey.KEY_PLAYER_MENU, new PlayerMenu(printer, scannerResponse));
     }
 
     @Override
     public void printMenu() {
-        int option = -1;
+        int option;
 
         do {
             try {
@@ -49,40 +55,25 @@ public class MainMenu extends Menu {
 
                 option = this.INPUT_RESPONSE.nextInt();
 
+                if (isExit(option)) {
+                    return;
+                }
+
                 if (!validate(option, this.mapMenu.size())) {
                     callInvalidOptionException();
                 }
 
-                final int menuSelected = option;
-
-                switch (menuSelected) {
-                    case MenuKey.KEY_GAME_MENU -> startGame();
-                    case EXIT_VALUE -> {/*do nothing*/}
-                    default -> callMenu(menuSelected);
-                }
+                callMenu(option);
 
             } catch (Exception ex) {
                 showDefaultMessageInvalidOption();
             }
-        } while (!isExit(option));
+        } while (true);
     }
 
     // TODO: 1/1/2023 Complete logic 
     private void startGame() {
-        /*Validate if there are players*/
-        if (!isTherePlayersToPlay()) {
-            printMessageWithSeparators("Agregue jugadores para iniciar a jugar.");
-            return;
-        }
-
-        // Logic to start game
-        printMessageWithSeparators("No esta disponible");
-        fullLineSeparatorSpace();
-    }
-
-    private boolean isTherePlayersToPlay() {
-        final PlayerMenu playerMenu = getMenu(MenuKey.KEY_PLAYER_MENU);
-        return playerMenu.therePlayersToPlay(TicTacGame.PLAYERS_EXPECTED);
+        this.mapMenu.get(MenuKey.KEY_GAME_MENU).printMenu();
     }
 
     private void callMenu(int selected) {

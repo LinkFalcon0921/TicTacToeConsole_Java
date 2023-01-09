@@ -34,6 +34,12 @@ abstract class Menu implements Constants.Menu {
         printLineSeparator();
     }
 
+    protected void printMessageWithSeparators(final String separator, String xyz) {
+        printLineSeparator(separator);
+        println(xyz);
+        printLineSeparator(separator);
+    }
+
     protected void printLineSeparator(String separator) {
         if (!separator.isBlank()) {
             separator = separator.repeat(COUNT_SEPARATOR_LENGTH);
