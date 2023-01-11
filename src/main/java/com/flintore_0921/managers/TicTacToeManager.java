@@ -9,12 +9,8 @@ import com.flintore_0921.utils.TableChecker;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.Objects;
 import java.util.stream.Stream;
-
-import static com.flintore_0921.componentes.Constants.Table.TABLE_COLUMNS;
-import static com.flintore_0921.componentes.Constants.Table.TABLE_ROWS;
 
 public class TicTacToeManager {
 
@@ -132,6 +128,6 @@ public class TicTacToeManager {
     }
 
     private boolean checkWon(PlayerIcon playerIcon) {
-        return this.tableCheckerManager.checkIsMatchInARow(this.table, playerIcon);p
+        return this.tableCheckerManager.checkIsMatchInARow(this.table, playerIcon);
     }
 }
